@@ -271,3 +271,13 @@ class List extends Component {
 
     }
 }
+List.propTypes = {
+    item: PropTypes.object,
+    editItem: PropTypes.func,
+    updataItem: PropTypes.func,
+    delItem: PropTypes.func
+};
+
+List.defaultProps = {
+    item: {}
+}
