@@ -126,7 +126,7 @@ export default class App extends Component {
                 alert(res.msg); //更新成功
                 if (res.data) {
                     data.id = res.data.id;
-                    this.setState({list});
+                    this.setState({ list });
                 }
 
             }).catch((e) => {
@@ -145,9 +145,10 @@ export default class App extends Component {
             for (let i = 0; i < list.length; i++) {
                 if (list[i].id == data.id) {
                     list.splice(i, 1);
-                    return this.setState({ list });
+                    break;
                 }
             }
+            this.setState({ list });
             if (data.id > 0) {
                 fetch(`/api/del/${data.id}`)
                     .then((res) => {
@@ -212,8 +213,8 @@ class List extends Component {
                 <td>
                     <input type="text" disabled={editState} ref="name" defaultValue={name} />
                 </td>
-                <td><input type="text" disabled={editState} ref="age" defaultValue={age} /></td>
-                <td><input type="text" disabled={editState} ref="phone" defaultValue={phone} /></td>
+                <td><input type="number" disabled={editState} ref="age" defaultValue={age} /></td>
+                <td><input type="tel" disabled={editState} ref="phone" defaultValue={phone} /></td>
                 <td>
                     <textarea disabled={editState} ref="phrase" defaultValue={phrase}></textarea>
                 </td>
@@ -233,9 +234,18 @@ class List extends Component {
                 this.props.editItem(this.props.item);
             } else {
                 let name = this.refs.name.value;
-                let age = this.refs.age.value;
+                let age = parseInt(this.refs.age.value);
                 let phone = this.refs.phone.value;
                 let phrase = this.refs.phrase.value;
+                console.log(age);
+                if (!name) {
+                    return alert('姓名不能为空');
+                } else if (!age || age < 0) {
+                    return alert('年龄不合法');
+                } else if (!phone) {
+                    return alert('手机号码不能为空');
+                }
+
                 this.props.updataItem({ id, image, name, age, phone, phrase, editState: true });
             }
         }
