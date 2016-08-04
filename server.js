@@ -53,7 +53,9 @@ app.get('/api/del/:id', function (req, res) {
         });
     });
 });
-
+/**
+ * 修改或新增数据
+ */
 app.post('/api/edit/:id', function (req, res) {
     fs.readFile(dataurl, 'utf-8', function (err, text) {
         if (err) {
