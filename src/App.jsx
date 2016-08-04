@@ -31,9 +31,7 @@ export default class App extends Component {
                             <th>头像</th>
                             <th>名字</th>
                             <th>
-                                年龄
-                                <a href="javasctipt:;">↑</a>
-                                <a href="javasctipt:;">↓</a>
+                                年龄(<a href="javasctipt:;" onClick={this.sortMax}>大</a> | <a href="javasctipt:;" onClick={this.sortMin}>小</a>)
                             </th>
                             <th>电话</th>
                             <th>签名</th>
@@ -183,6 +181,27 @@ export default class App extends Component {
             this.setState({ list });
         }
 
+        /**
+         * 按年龄最大排序
+         */
+        this.sortMax = () => {
+            var {list} = this.state;
+
+            list.sort((o1, o2) => o1.age < o2.age ? 1 : -1);
+
+            this.setState({ list });
+        }
+
+        /**
+         * 按年龄最小排序
+         */
+        this.sortMin = () => {
+            var {list} = this.state;
+
+            list.sort((o1, o2) => o1.age > o2.age ? 1 : -1);
+
+            this.setState({ list });
+        }
     }
     componentDidMount() {
         //从服务器拉取数据
@@ -237,7 +256,7 @@ class List extends Component {
                 let age = parseInt(this.refs.age.value);
                 let phone = this.refs.phone.value;
                 let phrase = this.refs.phrase.value;
-                console.log(age);
+
                 if (!name) {
                     return alert('姓名不能为空');
                 } else if (!age || age < 0) {

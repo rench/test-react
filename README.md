@@ -11,6 +11,7 @@ react + less + webpack + ES6 + flex.css + nodejs + fetch
   2.修改数据
   3.删除数据
   4.添加数据
+  5.按照年龄大小排序
 ```
 
 ### 开发环境
