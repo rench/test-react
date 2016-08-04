@@ -261,8 +261,8 @@ class List extends Component {
                     return alert('姓名不能为空');
                 } else if (!age || age < 0) {
                     return alert('年龄不合法');
-                } else if (!phone) {
-                    return alert('手机号码不能为空');
+                } else if (!/^\d+$/.test(phone)) {
+                    return alert('手机号码不合法');
                 }
 
                 this.props.updataItem({ id, image, name, age, phone, phrase, editState: true });
