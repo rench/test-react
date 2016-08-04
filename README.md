@@ -38,4 +38,4 @@ react + less + webpack + ES6 + flex.css + nodejs + fetch
 
 ### 截图
 
-![Alt text](shot/1.png)
+![截图](shot/1.png)
