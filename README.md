@@ -25,6 +25,7 @@ react + less + webpack + ES6 + flex.css + nodejs + fetch
 
 ### 运行
 ```
+  git clone https://github.com/1340641314/test-react.git
   npm install 安装依赖模块
   npm run dev 开发环境 访问：http://localhost:3000/dist/index.html
   npm run dist 生产环境编译
