@@ -35,3 +35,7 @@ react + less + webpack + ES6 + flex.css + nodejs + fetch
   对比vuejs，react入门门槛比较高，
   但是对逻辑的处理能力要比vue强很多,同时也导致复杂很多。
 ```
+
+### 截图
+
+![Alt text](shot/1.png)
