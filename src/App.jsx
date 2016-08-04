@@ -1,6 +1,20 @@
 import React, {Component, PropTypes} from 'react';
 import ReactDOM, {render} from 'react-dom';
 
+/**
+ * 转化数据
+ * 
+ * @param {Object} data
+ * @returns String
+ */
+function formData(data) {
+    var arr = [];
+    for (let key in data) {
+        arr.push(`${key}=${data[key]}`);
+    }
+    return arr.join('&');
+}
+
 export default class App extends Component {
     render() {
         return (
@@ -99,9 +113,25 @@ export default class App extends Component {
                 }
             }
             this.setState({ list });
-            if (data.id < 0) {
-                //说明此条数据是新增，需要发送到服务器保存数据
-            }
+            //注意：如果 id < 0 后台应该是新增
+            fetch(`/api/edit/${data.id}`, {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData(data)
+            }).then((res) => {
+                return res.json();
+            }).then((res) => {
+                alert(res.msg); //更新成功
+                if (res.data) {
+                    data.id = res.data.id;
+                    this.setState({list});
+                }
+
+            }).catch((e) => {
+                alert('更新失败');
+            });
         }
 
         /**
@@ -112,24 +142,25 @@ export default class App extends Component {
          */
         this.delItem = (data) => {
             var {list} = this.state;
-
-            fetch(`/api/del/${data.id}`)
-                .then((res) => {
-                    return res.json();
-                })
-                .then((res) => {
-                    alert(res.msg); //删除成功
-                })
-                .catch((e) => {
-                    alert('删除失败');
-                });
-
             for (let i = 0; i < list.length; i++) {
                 if (list[i].id == data.id) {
                     list.splice(i, 1);
                     return this.setState({ list });
                 }
             }
+            if (data.id > 0) {
+                fetch(`/api/del/${data.id}`)
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((res) => {
+                        alert(res.msg); //删除成功
+                    })
+                    .catch((e) => {
+                        alert('删除失败');
+                    });
+            }
+
         }
         var aid = 0;
         /**
@@ -142,13 +173,12 @@ export default class App extends Component {
                 id: --aid, //添加时，必须保证唯一id，否则会报错，等用户保存时，如果id < 0 则需要向服务器发送请求保存，保存成功后，服务器返回id后将id再更新
                 image: 'http://localhost:3000/images/4.jpg',
                 name: '',
-                age: 12,
+                age: 18,
                 phone: '',
                 phrase: '',
                 display: '',
                 editState: false
             });
-
             this.setState({ list });
         }
 
@@ -198,7 +228,7 @@ class List extends Component {
         super(props);
 
         this.editItem = () => {
-            var {id, image, editState = true, editItem} = this.props;
+            var {id, image, editState = true, editItem} = this.props.item;
             if (editState) {
                 this.props.editItem(this.props.item);
             } else {
@@ -206,7 +236,6 @@ class List extends Component {
                 let age = this.refs.age.value;
                 let phone = this.refs.phone.value;
                 let phrase = this.refs.phrase.value;
-
                 this.props.updataItem({ id, image, name, age, phone, phrase, editState: true });
             }
         }

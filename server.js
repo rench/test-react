@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 var config = require('./webpack.config');
+var bodyParser = require('body-parser');
 var fs = require('fs');
 
 //启动服务
@@ -9,16 +10,20 @@ var server = new WebpackDevServer(webpack(config), {
 });
 
 var dataurl = __dirname + '/data.json';
-
+var {app} = server;
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
 //获取列表数据
-server.app.get('/api/list', function (req, res) {
+app.get('/api/list', function (req, res) {
     res.sendFile(dataurl)
 });
 
 /**
  * 删除数据
  */
-server.app.get('/api/del/:id', function (req, res) {
+app.get('/api/del/:id', function (req, res) {
     fs.readFile(dataurl, 'utf-8', function (err, text) {
         if (err) {
             return res.json({
@@ -49,4 +54,52 @@ server.app.get('/api/del/:id', function (req, res) {
     });
 });
 
-server.listen(3000);
+app.post('/api/edit/:id', function (req, res) {
+    fs.readFile(dataurl, 'utf-8', function (err, text) {
+        if (err) {
+            return res.json({
+                msg: '修改失败',
+                data: null,
+                status: false
+            });
+        }
+
+        var list = JSON.parse(text);
+        var {id, image, name, age, phone, phrase} = req.body;
+        var data = { id, image, name, age, phone, phrase };
+
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].id == id) {
+                list[i] = data;
+                fs.writeFile(dataurl, JSON.stringify(list)); //保存删除后的文件
+                return res.json({
+                    msg: '修改成功',
+                    data: data,
+                    status: true
+                });
+            }
+        }
+
+        //id < 0 说明是新增
+        if (req.params.id < 0) {
+            data.id = new Date().getTime(); //暂时用它模拟生成唯一id
+            list.push(data);
+            fs.writeFile(dataurl, JSON.stringify(list)); //保存删除后的文件
+            return res.json({
+                msg: '保存成功',
+                data: data,
+                status: true
+            });
+        } else {
+           return res.json({
+                msg: '操作失败，数据不存在',
+                data: null,
+                status: false
+            }); 
+        }
+
+
+    });
+});
+
+app.listen(3000);
