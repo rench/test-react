@@ -39,4 +39,4 @@ react + less + webpack + ES6 + flex.css + nodejs + fetch
 
 ### 截图
 
-![截图](https://github.com/1340641314/test-cnode/raw/master/shot/1.png)
+![截图](https://github.com/1340641314/test-react/raw/master/shot/1.png)
